@@ -1,0 +1,12 @@
+package com.interceptorsystem.api.repository;
+
+import com.interceptorsystem.api.entity.CondominioEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface CondominioRepository extends JpaRepository<CondominioEntity, UUID> {
+}
