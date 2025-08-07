@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Alocacao {
+public class AlocacaoEntity {
     @Id
     @GeneratedValue
     private UUID id;

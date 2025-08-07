@@ -16,7 +16,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Funcionario {
+public class FuncionarioEntity {
     @Id
     @GeneratedValue
     private UUID id;

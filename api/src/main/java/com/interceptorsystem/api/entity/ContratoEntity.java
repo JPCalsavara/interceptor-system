@@ -1,4 +1,4 @@
-package com.interceptorsystem.api.domain.entity;
+package com.interceptorsystem.api.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,16 +12,21 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Contrato {
+public class ContratoEntity {
     @Id
     @GeneratedValue
     private UUID id;
 
+    @Column(nullable = false)
     private BigDecimal valorDiariaCobrada;
+
+    @Column(nullable = false)
     private LocalDate dataInicio;
+
+    @Column(nullable = false)
     private LocalDate dataFim;
 
     @ManyToOne
     @JoinColumn(name = "condominio_id")
-    private Condominio condominio;
+    private CondominioEntity condominio;
 }
