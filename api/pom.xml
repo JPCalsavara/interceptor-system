@@ -11,7 +11,7 @@
 	<groupId>com.interceptorsystem</groupId>
 	<artifactId>api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>api</name>
+	<name>backend</name>
 	<description>API de gerenciamento de funcionários e contabilidade de condomínios horizontais</description>
 	<url/>
 	<licenses>
@@ -67,10 +67,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>software.amazon.awssdk</groupId>
-			<artifactId>s3</artifactId>
 		</dependency>
 	</dependencies>
 
