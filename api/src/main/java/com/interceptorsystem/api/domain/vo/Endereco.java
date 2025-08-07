@@ -1,6 +1,5 @@
 package com.interceptorsystem.api.domain.vo;
 
-import com.interceptorsystem.api.domain.entity.Condominio;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,5 +23,5 @@ public class Endereco {
 
     @ManyToOne
     @JoinColumn(name = "condominio_id")
-    private Condominio condominio;
+    private com.interceptorsystem.api.entity.CondominioEntity condominio;
 }
