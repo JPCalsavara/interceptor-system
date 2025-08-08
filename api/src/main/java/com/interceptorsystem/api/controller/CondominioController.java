@@ -3,6 +3,7 @@ package com.interceptorsystem.api.controller;
 import com.interceptorsystem.api.dto.CondominioRequestDTO;
 import com.interceptorsystem.api.entity.CondominioEntity;
 import com.interceptorsystem.api.usecase.CreateCondominioUseCase;
+import com.interceptorsystem.api.usecase.DeleteCondominioUseCase;
 import com.interceptorsystem.api.usecase.GetAllCondominioUseCase;
 import com.interceptorsystem.api.usecase.UpdateCondominioUseCase;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,15 @@ public class CondominioController {
     private final GetAllCondominioUseCase getAllCondominioUseCase;
     private final CreateCondominioUseCase createCondominioUseCase;
     private final UpdateCondominioUseCase updateCondominioUseCase;
+    private final DeleteCondominioUseCase deleteCondominioUseCase;
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<CondominioEntity>> getAllCondominios(){
         List<CondominioEntity> condominios = getAllCondominioUseCase.execute();
         return ResponseEntity.ok(condominios);
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<CondominioEntity> createCondominio(
             @RequestBody CondominioRequestDTO condominioRequestDTO
             ){
@@ -36,11 +38,20 @@ public class CondominioController {
         return ResponseEntity.ok(newCondominio);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<CondominioEntity> updateCondominio(
-            @RequestBody CondominioRequestDTO condominioRequestDTO, UUID id
+            @RequestBody CondominioRequestDTO condominioRequestDTO,
+            @PathVariable UUID id
     ){
         CondominioEntity newCondominio = updateCondominioUseCase.execute(condominioRequestDTO, id);
         return ResponseEntity.ok(newCondominio);
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<String> deleteCondominio(
+            @PathVariable UUID id
+    ){
+        deleteCondominioUseCase.execute(id);
+        return ResponseEntity.ok("A condominio foi deletado de ID =" + id);
     }
 }
