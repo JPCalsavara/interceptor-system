@@ -1,9 +1,6 @@
-package com.interceptorsystem.api.domain.entity;
+package com.interceptorsystem.api.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +16,12 @@ public class PostoDeTrabalhoEntity {
     @GeneratedValue
     private UUID id;
 
+    @Column(nullable = false)
     private String descricao;
+
+    @Column(nullable = false)
     private LocalTime horarioInicio;
+
+    @Column(nullable = false)
     private LocalTime horarioFim;
 }
