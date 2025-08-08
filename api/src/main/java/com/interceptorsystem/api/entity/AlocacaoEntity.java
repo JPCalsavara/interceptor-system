@@ -2,6 +2,7 @@ package com.interceptorsystem.api.entity;
 
 import com.interceptorsystem.api.domain.enums.StatusAlocacao;
 import com.interceptorsystem.api.domain.enums.TipoAlocacao;
+import com.interceptorsystem.api.domain.entity.FuncionarioEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,5 +36,5 @@ public class AlocacaoEntity {
     // --- Relacionamento: Muitas Alocações para UM Funcionário ---
     @ManyToOne
     @JoinColumn(name = "funcionario_id")
-    private FuncionarioE funcionario;
+    private FuncionarioEntity funcionario;
 }
