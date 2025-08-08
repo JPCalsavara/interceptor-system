@@ -1,0 +1,49 @@
+# Versão do Docker Compose. A '3.8' é uma versão moderna e estável.
+version: '3.8'
+
+# Definição dos serviços que compõem o ambiente de desenvolvimento do backend.
+services:
+  # 1. Serviço do Banco de Dados PostgreSQL
+  database:
+    # Utiliza a imagem oficial do PostgreSQL, versão 15, que é leve (alpine).
+    image: postgres:15-alpine
+    # Nome do container para fácil identificação.
+    container_name: gestao_postgres_db
+    # Configura o banco de dados usando as variáveis do arquivo .env.
+    environment:
+      POSTGRES_DB: interceptor
+      POSTGRES_USER: jpcalsavara
+      POSTGRES_PASSWORD: senha
+    # Mapeia a porta do container para a porta do seu computador.
+    ports:
+      - "5432:5432"
+    # Utiliza um "volume" para garantir que os dados da base de dados persistam.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Define uma política de reinicialização para o container.
+    restart: unless-stopped
+
+  # 2. Serviço do Backend (API Java/Spring Boot)
+  backend:
+    # Instrui o Docker a construir a imagem a partir do Dockerfile
+    # que está no diretório atual (a pasta 'backend').
+    build: .
+    container_name: gestao_backend_api
+    # Garante que o serviço da base de dados seja iniciado ANTES do backend.
+    depends_on:
+      - database
+    # Mapeia a porta do backend para a porta do seu computador.
+    ports:
+      - "8080:8080"
+    # Passa as variáveis de ambiente necessárias para a aplicação Spring Boot.
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/interceptor
+      SPRING_DATASOURCE_USERNAME: jpcalsavara
+      SPRING_DATASOURCE_PASSWORD: senha
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_FLYWAY_ENABLED: true
+    restart: unless-stopped
+
+# Declaração dos volumes nomeados para persistência de dados.
+volumes:
+  postgres_data:
