@@ -24,16 +24,16 @@ public class CondominioController {
     private final UpdateCondominioUseCase updateCondominioUseCase;
     private final DeleteCondominioUseCase deleteCondominioUseCase;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<CondominioEntity>> getAllCondominios(){
         List<CondominioEntity> condominios = getAllCondominioUseCase.execute();
         return ResponseEntity.ok(condominios);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<CondominioEntity> createCondominio(
             @RequestBody CondominioRequestDTO condominioRequestDTO
-            ){
+            ) throws Exception {
         CondominioEntity newCondominio = createCondominioUseCase.execute(condominioRequestDTO);
         return ResponseEntity.ok(newCondominio);
     }
