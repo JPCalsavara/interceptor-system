@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         // Usa o logger para registar o erro e a sua stack trace. Esta é a forma correta.
-        log.error("Erro não esperado capturado pelo GlobalExceptionHandler:", ex);
+       System.out.println("Erro não esperado capturado pelo GlobalExceptionHandler");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
