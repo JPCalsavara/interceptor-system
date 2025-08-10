@@ -26,7 +26,7 @@ public class CreateCondominioUseCase {
             }
 
             // 3. Se não existir, cria a nova entidade e a salva no banco.
-            CondominioEntity newCondominio = new CondominioEntity(data.nome(), data.cnpj(), data.status());
+            CondominioEntity newCondominio = new CondominioEntity(data.nome(), data.cnpj(),data.status());
             return condominioRepository.save(newCondominio);
 
         } catch (Exception e) {
