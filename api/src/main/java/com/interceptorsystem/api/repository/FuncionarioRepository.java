@@ -2,7 +2,7 @@ package com.interceptorsystem.api.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.interceptorsystem.api.domain.entity.FuncionarioEntity;
+import com.interceptorsystem.api.entity.FuncionarioEntity;
 
 import java.util.UUID;
 
