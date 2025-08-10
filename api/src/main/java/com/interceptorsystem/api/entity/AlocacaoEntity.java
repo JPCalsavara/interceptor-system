@@ -2,9 +2,10 @@ package com.interceptorsystem.api.entity;
 
 import com.interceptorsystem.api.domain.enums.StatusAlocacao;
 import com.interceptorsystem.api.domain.enums.TipoAlocacao;
-import com.interceptorsystem.api.domain.entity.FuncionarioEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -14,6 +15,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AlocacaoEntity {
     @Id
     @GeneratedValue

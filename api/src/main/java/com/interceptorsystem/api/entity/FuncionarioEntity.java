@@ -1,4 +1,4 @@
-package com.interceptorsystem.api.domain.entity;
+package com.interceptorsystem.api.entity;
 
 import com.interceptorsystem.api.domain.enums.StatusFuncionario;
 import com.interceptorsystem.api.domain.enums.TipoEscala;
@@ -6,7 +6,9 @@ import com.interceptorsystem.api.domain.enums.TipoFuncionario;
 import com.interceptorsystem.api.domain.vo.CPF;
 import com.interceptorsystem.api.domain.vo.Celular;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -16,6 +18,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FuncionarioEntity {
     @Id
     @GeneratedValue

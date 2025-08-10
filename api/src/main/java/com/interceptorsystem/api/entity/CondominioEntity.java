@@ -2,7 +2,9 @@ package com.interceptorsystem.api.entity;
 
 import com.interceptorsystem.api.domain.enums.StatusCondominio;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
@@ -11,6 +13,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CondominioEntity {
     @Id
     @GeneratedValue
@@ -19,7 +23,7 @@ public class CondominioEntity {
     @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "cnpj", nullable = false)
+    @Column(name = "cnpj", nullable = false, unique = true)
     private String cnpj;
 
     @Column(name = "status", nullable = false)
