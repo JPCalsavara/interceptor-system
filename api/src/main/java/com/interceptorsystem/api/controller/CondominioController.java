@@ -42,8 +42,8 @@ public class CondominioController {
     public ResponseEntity<CondominioEntity> updateCondominio(
             @RequestBody CondominioRequestDTO condominioRequestDTO,
             @PathVariable UUID id
-    ){
-        CondominioEntity newCondominio = updateCondominioUseCase.execute(condominioRequestDTO, id);
+    ) throws Exception {
+        CondominioEntity newCondominio = updateCondominioUseCase.execute( id, condominioRequestDTO);
         return ResponseEntity.ok(newCondominio);
     }
 
