@@ -3,6 +3,7 @@ package com.interceptorsystem.api.usecase;
 import com.interceptorsystem.api.dto.CondominioRequestDTO;
 import com.interceptorsystem.api.entity.CondominioEntity;
 import com.interceptorsystem.api.exception.CondominioJaExisteException;
+import com.interceptorsystem.api.exception.CondominioNaoEncontradoException;
 import com.interceptorsystem.api.repository.CondominioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,11 @@ public class CreateCondominioUseCase {
             // 3. Se não existir, cria a nova entidade e a salva no banco.
             CondominioEntity newCondominio = new CondominioEntity(data.nome(), data.cnpj(),data.status());
             return condominioRepository.save(newCondominio);
+
+        } catch (CondominioJaExisteException e) {
+            // 1. Captura a exceção específica de "não encontrado".
+            //    Ao relançá-la aqui, você permite que o Spring a veja e retorne o status 404.
+            throw e;
 
         } catch (Exception e) {
             // 4. Captura qualquer exceção (incluindo a CondominioJaExisteException)
