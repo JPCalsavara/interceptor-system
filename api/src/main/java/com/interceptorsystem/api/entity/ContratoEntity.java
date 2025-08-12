@@ -1,5 +1,6 @@
 package com.interceptorsystem.api.entity;
 
+import com.interceptorsystem.api.domain.enums.StatusContrato;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,12 @@ public class ContratoEntity {
     @GeneratedValue
     private UUID id;
 
+    @Column
+    private String descricao;
+
+    @Column(nullable = false)
+    private BigDecimal valorTotal;
+
     @Column(nullable = false)
     private BigDecimal valorDiariaCobrada;
 
@@ -29,6 +36,10 @@ public class ContratoEntity {
 
     @Column(nullable = false)
     private LocalDate dataFim;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusContrato status;
 
     @ManyToOne
     @JoinColumn(name = "condominio_id")
