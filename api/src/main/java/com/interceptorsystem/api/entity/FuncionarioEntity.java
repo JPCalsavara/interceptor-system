@@ -43,14 +43,6 @@ public class FuncionarioEntity {
     @Column(nullable = false)
     private TipoFuncionario tipoFuncionario;
 
-    @Column(nullable = false)
-    private BigDecimal salarioMensal;
-
-    @Column(nullable = false)
-    private BigDecimal valorTotalBeneficiosMensal;
-
-    @Column(nullable = false)
-    private BigDecimal valorDiariaFixa;
 
 
 }
