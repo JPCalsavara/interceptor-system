@@ -19,8 +19,8 @@ public class ContratoController {
 
     // Injeção de todos os casos de uso necessários para o CRUD de Contrato
     private final CreateContratoUseCase createContratoUseCase;
-//    private final UpdateContratoUseCase updateContratoUseCase;
-//    private final DeleteContratoUseCase deleteContratoUseCase;
+    private final UpdateContratoUseCase updateContratoUseCase;
+    private final DeleteContratoUseCase deleteContratoUseCase;
     private final GetAllContratoUseCase getAllContratoUseCase;
     private final GetContratoByIdUseCase getContratoByIdUseCase;
 
@@ -46,16 +46,16 @@ public class ContratoController {
         List<ContratoEntity> contratos = getAllContratoUseCase.execute();
         return ResponseEntity.ok(contratos);
     }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<ContratoEntity> updateContrato(@PathVariable UUID id, @RequestBody ContratoRequestDTO data) throws Exception {
-//        ContratoEntity updatedContrato = updateContratoUseCase.execute(id, data);
-//        return ResponseEntity.ok(updatedContrato);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteContrato(@PathVariable UUID id) {
-//        deleteContratoUseCase.execute(id);
-//        return ResponseEntity.noContent().build();
-//    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ContratoEntity> updateContrato(@PathVariable UUID id, @RequestBody ContratoRequestDTO data) throws Exception {
+        ContratoEntity updatedContrato = updateContratoUseCase.execute(id, data);
+        return ResponseEntity.ok(updatedContrato);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteContrato(@PathVariable UUID id) {
+        deleteContratoUseCase.execute(id);
+        return ResponseEntity.noContent().build();
+    }
 }
