@@ -28,4 +28,8 @@ public class PostoDeTrabalhoEntity {
 
     @Column(nullable = false)
     private LocalTime horarioFim;
+
+    @ManyToOne
+    @JoinColumn(name = "condominio_id")
+    private CondominioEntity condominio;
 }
