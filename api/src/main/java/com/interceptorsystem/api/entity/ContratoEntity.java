@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Table(name = "contrato")
+@Table(name = "contratos")
 @Entity
 @Getter
 @Setter
