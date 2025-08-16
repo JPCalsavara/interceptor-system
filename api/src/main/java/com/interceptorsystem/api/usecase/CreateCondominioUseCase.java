@@ -2,13 +2,12 @@ package com.interceptorsystem.api.usecase;
 
 import com.interceptorsystem.api.dto.CondominioRequestDTO;
 import com.interceptorsystem.api.entity.CondominioEntity;
+import com.interceptorsystem.api.domain.vo.CNPJ;
+import com.interceptorsystem.api.domain.vo.Endereco;
 import com.interceptorsystem.api.exception.CondominioJaExisteException;
-import com.interceptorsystem.api.exception.CondominioNaoEncontradoException;
 import com.interceptorsystem.api.repository.CondominioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,28 +17,34 @@ public class CreateCondominioUseCase {
 
     public CondominioEntity execute(CondominioRequestDTO data) throws Exception {
         try {
-            // 1. Verifica se já existe um condomínio com o CNPJ fornecido.
-            Optional<CondominioEntity> existingCondominio = condominioRepository.findByCnpj(data.cnpj());
+            CNPJ cnpj = new CNPJ(data.cnpj());
 
-            // 2. Se o condomínio já existir, lança a exceção específica.
-            if (existingCondominio.isPresent()) {
+            condominioRepository.findByCnpj(cnpj).ifPresent(condominio -> {
                 throw new CondominioJaExisteException("Condomínio com o CNPJ " + data.cnpj() + " já cadastrado.");
-            }
+            });
 
-            // 3. Se não existir, cria a nova entidade e a salva no banco.
-            CondominioEntity newCondominio = new CondominioEntity(data.nome(), data.cnpj(),data.status());
+            Endereco endereco = new Endereco(
+                    data.logradouro(), data.numero(), data.complemento(), data.bairro(),
+                    data.cidade(), data.estado(), data.cep()
+            );
+
+            CondominioEntity newCondominio = new CondominioEntity();
+            newCondominio.setNome(data.nome());
+            newCondominio.setStatus(data.status());
+            newCondominio.setCnpj(cnpj);
+            newCondominio.setEndereco(endereco);
+
             return condominioRepository.save(newCondominio);
 
         } catch (CondominioJaExisteException e) {
-            // 1. Captura a exceção específica de "não encontrado".
-            //    Ao relançá-la aqui, você permite que o Spring a veja e retorne o status 404.
+            // Captura a exceção de negócio e a relança para o GlobalExceptionHandler
             throw e;
-
+        } catch (IllegalArgumentException e) {
+            // Captura erros de validação dos Value Objects
+            throw new Exception("Dados inválidos fornecidos: " + e.getMessage(), e);
         } catch (Exception e) {
-            // 4. Captura qualquer exceção (incluindo a CondominioJaExisteException)
-            // e a "embrulha" em uma Exception genérica antes de relançar.
-            // Isso fará com que o teste que espera a exceção específica falhe.
-            throw new Exception("Ocorreu um erro ao criar o condomínio: " + e.getMessage(), e);
+            // Captura qualquer outro erro inesperado
+            throw new Exception("Ocorreu um erro inesperado ao criar o condomínio.", e);
         }
     }
 }
