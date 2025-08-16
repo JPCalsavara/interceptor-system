@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: Interceptor System API
+  description: API para gerenciamento de condomínios, funcionários, contratos e alocações.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Servidor de Desenvolvimento Local
+
+paths:
+  /condominio:
+    post:
+      summary: Cria um novo condomínio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CondominioRequest'
+            example:
+              nome: "Condomínio Vila das Flores"
+              cnpj: "11.222.333/0001-44"
+              status: "ATIVO"
+              logradouro: "Rua das Orquídeas"
+              numero: "150"
+              complemento: "Bloco B"
+              bairro: "Jardim Primavera"
+              cidade: "Campinas"
+              estado: "SP"
+              cep: "13087-000"
+      responses:
+        '201':
+          description: Condomínio criado com sucesso
+    get:
+      summary: Retorna todos os condomínios
+      responses:
+        '200':
+          description: Lista de condomínios
+
+  /condominio/{id}:
+    get:
+      summary: Retorna um condomínio pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Dados do condomínio
+    put:
+      summary: Atualiza um condomínio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CondominioRequest'
+      responses:
+        '200':
+          description: Condomínio atualizado
+    delete:
+      summary: Deleta um condomínio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Condomínio deletado
+
+  /funcionario:
+    post:
+      summary: Cria um novo funcionário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FuncionarioRequest'
+            example:
+              nome: "José da Silva"
+              cpf: "111.222.333-44"
+              celular: "(19) 98877-6655"
+              statusFuncionario: "ATIVO"
+              tipoEscala: "DOZE_POR_TRINTA_SEIS"
+              tipoFuncionario: "CLT"
+              logradouro: "Rua dos Trabalhadores"
+              numero: "50"
+              complemento: null
+              bairro: "Vila Industrial"
+              cidade: "Limeira"
+              estado: "SP"
+              cep: "13480-000"
+      responses:
+        '201':
+          description: Funcionário criado com sucesso
+    get:
+      summary: Retorna todos os funcionários
+      responses:
+        '200':
+          description: Lista de funcionários
+
+  /funcionario/{id}:
+    get:
+      summary: Retorna um funcionário pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Dados do funcionário
+    put:
+      summary: Atualiza um funcionário
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FuncionarioRequest'
+      responses:
+        '200':
+          description: Funcionário atualizado
+    delete:
+      summary: Deleta um funcionário
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Funcionário deletado
+
+  # Adicione aqui as definições para Contrato, Posto de Trabalho e Alocação seguindo o mesmo padrão...
+
+components:
+  schemas:
+    CondominioRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+        cnpj:
+          type: string
+        status:
+          type: string
+          enum: [ATIVO, INATIVO, PENDENTE]
+        logradouro:
+          type: string
+        numero:
+          type: string
+        complemento:
+          type: string
+        bairro:
+          type: string
+        cidade:
+          type: string
+        estado:
+          type: string
+        cep:
+          type: string
+    FuncionarioRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+        cpf:
+          type: string
+        celular:
+          type: string
+        statusFuncionario:
+          type: string
+          enum: [ATIVO, FERIAS, AFASTADO, DEMITIDO]
+        tipoEscala:
+          type: string
+          enum: [DOZE_POR_TRINTA_SEIS, SEMANAL_COMERCIAL]
+        tipoFuncionario:
+          type: string
+          enum: [CLT, FREELANCER, TERCEIRIZADO]
+        logradouro:
+          type: string
+        numero:
+          type: string
+        complemento:
+          type: string
+        bairro:
+          type: string
+        cidade:
+          type: string
+        estado:
+          type: string
+        cep:
+          type: string
