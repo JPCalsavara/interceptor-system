@@ -38,7 +38,7 @@ public class CreateContratoUseCase {
             newContrato.setValorDiariaCobrada(data.valorDiaria());
             newContrato.setDataInicio(data.dataInicio());
             newContrato.setDataFim(data.dataFim());
-            newContrato.setStatus((StatusContrato) data.status());
+            newContrato.setStatus(data.statusContrato());
             newContrato.setCondominio(condominio);
 
             // 4. Salva o novo contrato no banco de dados.
