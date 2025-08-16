@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.time.LocalTime;
 import java.util.UUID;
 
-@Table(name = "posto-de-trabalho")
+@Table(name = "postos_de_trabalho")
 @Entity
 @Getter
 @Setter
