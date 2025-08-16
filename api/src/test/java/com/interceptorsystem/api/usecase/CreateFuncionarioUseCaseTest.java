@@ -31,32 +31,42 @@ public class CreateFuncionarioUseCaseTest {
     private CreateFuncionarioUseCase createFuncionarioUseCase;
 
     @Test
-    @DisplayName("Deve criar um funcionário com sucesso quando o CPF for único")
-    void createFuncionario_withUniqueCpf_shouldSucceed() throws Exception {
+    @DisplayName("Deve criar um funcionário com sucesso com dados válidos")
+    void createFuncionario_withValidData_shouldSucceed() throws Exception {
         // Arrange
-        var requestDTO = new FuncionarioRequestDTO("João Silva", "12345678901", "11987654321", StatusFuncionario.ATIVO, TipoEscala.DOZE_POR_TRINTA_SEIS, TipoFuncionario.CLT);
+        var request = new FuncionarioRequestDTO(
+                "Carlos Andrade", "111.222.333-44", "(19) 99876-5432",
+                StatusFuncionario.ATIVO, TipoEscala.DOZE_POR_TRINTA_SEIS, TipoFuncionario.CLT,
+                "Avenida Brasil", "1500", null, "Jardim Bela Vista", "Campinas", "SP", "13000-000"
+        );
         when(funcionarioRepository.findByCpf(any(CPF.class))).thenReturn(Optional.empty());
-        when(funcionarioRepository.save(any(FuncionarioEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(funcionarioRepository.save(any(FuncionarioEntity.class))).thenAnswer(inv -> inv.getArgument(0));
 
         // Action
-        FuncionarioEntity result = createFuncionarioUseCase.execute(requestDTO);
+        FuncionarioEntity result = createFuncionarioUseCase.execute(request);
 
         // Assert
         assertNotNull(result);
-        assertEquals("João Silva", result.getNome());
-        verify(funcionarioRepository, times(1)).save(any(FuncionarioEntity.class));
+        assertEquals("Carlos Andrade", result.getNome());
+        assertNotNull(result.getEndereco());
+        assertEquals("Avenida Brasil", result.getEndereco().getLogradouro());
+        verify(funcionarioRepository, times(1)).save(any());
     }
 
     @Test
     @DisplayName("Deve lançar FuncionarioJaExisteException quando o CPF já existir")
     void createFuncionario_withExistingCpf_shouldThrowException() {
         // Arrange
-        var requestDTO = new FuncionarioRequestDTO("João Silva", "12345678901", "11987654321", StatusFuncionario.ATIVO, TipoEscala.DOZE_POR_TRINTA_SEIS, TipoFuncionario.CLT);
+        var request = new FuncionarioRequestDTO(
+                "Carlos Andrade", "111.222.333-44", "(19) 99876-5432",
+                StatusFuncionario.ATIVO, TipoEscala.DOZE_POR_TRINTA_SEIS, TipoFuncionario.CLT,
+                "Avenida Brasil", "1500", null, "Jardim Bela Vista", "Campinas", "SP", "13000-000"
+        );
         when(funcionarioRepository.findByCpf(any(CPF.class))).thenReturn(Optional.of(new FuncionarioEntity()));
 
         // Action & Assert
         assertThrows(FuncionarioJaExisteException.class, () -> {
-            createFuncionarioUseCase.execute(requestDTO);
+            createFuncionarioUseCase.execute(request);
         });
         verify(funcionarioRepository, never()).save(any());
     }

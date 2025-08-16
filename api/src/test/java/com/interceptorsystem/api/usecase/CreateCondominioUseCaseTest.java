@@ -3,6 +3,7 @@ package com.interceptorsystem.api.usecase;
 import com.interceptorsystem.api.domain.enums.StatusCondominio;
 import com.interceptorsystem.api.dto.CondominioRequestDTO;
 import com.interceptorsystem.api.entity.CondominioEntity;
+import com.interceptorsystem.api.domain.vo.CNPJ;
 import com.interceptorsystem.api.exception.CondominioJaExisteException;
 import com.interceptorsystem.api.repository.CondominioRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -28,35 +29,61 @@ public class CreateCondominioUseCaseTest {
     private CreateCondominioUseCase createCondominioUseCase;
 
     @Test
-    @DisplayName("Deve criar um condomínio com sucesso quando o CNPJ for único")
-    void createUserCase1() throws Exception {
-        var data = new CondominioRequestDTO("Condomínio Sol", "12345678901234", StatusCondominio.ATIVO);
-        when(condominioRepository.findByCnpj(data.cnpj())).thenReturn(Optional.empty());
-        when(condominioRepository.save(any(CondominioEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    @DisplayName("Deve criar um condomínio com sucesso com dados válidos")
+    void createCondominio_withValidData_shouldSucceed() throws Exception {
+        // Arrange
+        var request = new CondominioRequestDTO(
+                "Condomínio Central", "11.222.333/0001-44", StatusCondominio.ATIVO,
+                "Rua Principal", "123", "Apto 101", "Centro", "São Paulo", "SP", "01000-000"
+        );
+        when(condominioRepository.findByCnpj(any(CNPJ.class))).thenReturn(Optional.empty());
+        when(condominioRepository.save(any(CondominioEntity.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        CondominioEntity result = createCondominioUseCase.execute(data);
+        // Action
+        CondominioEntity result = createCondominioUseCase.execute(request);
 
-        assertNotNull(result, "O resultado não deveria ser nulo.");
-        assertEquals(data.nome(), result.getNome(), "O nome do condomínio não corresponde.");
-        verify(condominioRepository, times(1)).save(any(CondominioEntity.class));
+        // Assert
+        assertNotNull(result);
+        assertEquals("Condomínio Central", result.getNome());
+        assertNotNull(result.getEndereco());
+        assertEquals("Rua Principal", result.getEndereco().getLogradouro());
+        verify(condominioRepository, times(1)).save(any());
     }
 
     @Test
-    @DisplayName("Deve lançar uma exceção quando o CNPJ do condomínio já existir")
-    void createUserCase2() {
-        // Arrange (Preparação)
-        var data = new CondominioRequestDTO("Condomínio Lua", "98765432109876", StatusCondominio.ATIVO);
-        when(condominioRepository.findByCnpj(data.cnpj())).thenReturn(Optional.of(mock(CondominioEntity.class)));
+    @DisplayName("Deve lançar CondominioJaExisteException quando o CNPJ já existir")
+    void createCondominio_withExistingCnpj_shouldThrowCondominioJaExisteException() {
+        // Arrange
+        var request = new CondominioRequestDTO(
+                "Condomínio Repetido", "11.222.333/0001-44", StatusCondominio.ATIVO,
+                "Rua Principal", "123", null, "Centro", "São Paulo", "SP", "01000-000"
+        );
+        when(condominioRepository.findByCnpj(any(CNPJ.class))).thenReturn(Optional.of(new CondominioEntity()));
 
-        // Action & Assert (Execução e Verificação)
-        // **CORREÇÃO AQUI**
-        // O teste agora espera por 'Exception.class', que é o que o UseCase realmente lança
-        // após o bloco catch.
-        assertThrows(Exception.class, () -> {
-            createCondominioUseCase.execute(data);
-        }, "Deveria ter lançado uma exceção genérica");
+        // Action & Assert
+        assertThrows(CondominioJaExisteException.class, () -> {
+            createCondominioUseCase.execute(request);
+        });
+        verify(condominioRepository, never()).save(any());
+    }
 
-        // Verifica se o método 'save' NUNCA foi chamado.
+    @Test
+    @DisplayName("Deve lançar Exception para dados de VO inválidos (ex: CEP incorreto)")
+    void createCondominio_withInvalidVoData_shouldThrowException() {
+        // Arrange
+        var requestWithInvalidCep = new CondominioRequestDTO(
+                "Condomínio com Erro", "11.222.333/0001-44", StatusCondominio.ATIVO,
+                "Rua Válida", "123", null, "Centro", "São Paulo", "SP", "CEP_INVALIDO"
+        );
+
+        // Action & Assert
+        Exception exception = assertThrows(Exception.class, () -> {
+            createCondominioUseCase.execute(requestWithInvalidCep);
+        });
+
+        // Verifica se a causa do erro foi a validação do Value Object
+        assertTrue(exception.getCause() instanceof IllegalArgumentException);
+        assertTrue(exception.getMessage().contains("Dados inválidos fornecidos"));
         verify(condominioRepository, never()).save(any());
     }
 }
