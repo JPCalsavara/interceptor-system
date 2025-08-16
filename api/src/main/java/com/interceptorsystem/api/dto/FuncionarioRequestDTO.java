@@ -5,10 +5,20 @@ import com.interceptorsystem.api.domain.enums.TipoEscala;
 import com.interceptorsystem.api.domain.enums.TipoFuncionario;
 
 public record FuncionarioRequestDTO(
+        // Dados do Funcionário
         String nome,
-        String cpf, // Recebemos o CPF como String
-        String celular, // Recebemos o celular como String
+        String cpf,
+        String celular,
         StatusFuncionario statusFuncionario,
         TipoEscala tipoEscala,
-        TipoFuncionario tipoFuncionario
+        TipoFuncionario tipoFuncionario,
+
+        // Campos para o Value Object Endereco
+        String logradouro,
+        String numero,
+        String complemento,
+        String bairro,
+        String cidade,
+        String estado,
+        String cep
 ) {}
