@@ -23,9 +23,18 @@ public class UpdatePostoDeTrabalhoUseCase {
             }
 
             PostoDeTrabalhoEntity postoToUpdate = optionalPosto.get();
-            postoToUpdate.setDescricao(data.descricao());
-            postoToUpdate.setHorarioInicio(data.horarioInicio());
-            postoToUpdate.setHorarioFim(data.horarioFim());
+
+            // Atualiza apenas os campos que foram fornecidos no DTO
+            if (data.descricao() != null) {
+                postoToUpdate.setDescricao(data.descricao());
+            }
+            if (data.horarioInicio() != null) {
+                postoToUpdate.setHorarioInicio(data.horarioInicio());
+            }
+            if (data.horarioFim() != null) {
+                postoToUpdate.setHorarioFim(data.horarioFim());
+            }
+            // O condominioId não é alterado em uma atualização de posto
 
             return postoDeTrabalhoRepository.save(postoToUpdate);
         } catch (PostoDeTrabalhoNaoEncontradoException e) {

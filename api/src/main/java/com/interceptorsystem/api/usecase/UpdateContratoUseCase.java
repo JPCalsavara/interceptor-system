@@ -1,8 +1,8 @@
 package com.interceptorsystem.api.usecase;
 
-import com.interceptorsystem.api.domain.enums.StatusContrato;
 import com.interceptorsystem.api.dto.ContratoRequestDTO;
 import com.interceptorsystem.api.entity.ContratoEntity;
+import com.interceptorsystem.api.domain.enums.StatusContrato;
 import com.interceptorsystem.api.exception.ContratoNaoEncontradoException;
 import com.interceptorsystem.api.repository.ContratoRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,32 +19,40 @@ public class UpdateContratoUseCase {
 
     public ContratoEntity execute(UUID id, ContratoRequestDTO data) throws Exception {
         try {
-            // 1. Busca o contrato pelo ID, recebendo um Optional.
             Optional<ContratoEntity> optionalContrato = contratoRepository.findById(id);
-
-            // 2. Verifica se o contrato não foi encontrado.
             if (optionalContrato.isEmpty()) {
-                // Se estiver vazio, lança a exceção específica.
                 throw new ContratoNaoEncontradoException("Contrato com o ID " + id + " não encontrado.");
             }
 
-            // 3. Se foi encontrado, atualiza os campos da entidade.
             ContratoEntity contratoToUpdate = optionalContrato.get();
-            contratoToUpdate.setDescricao(data.descricao());
-            contratoToUpdate.setValorTotal(data.valorTotal());
-            contratoToUpdate.setValorDiariaCobrada(data.valorDiaria());
-            contratoToUpdate.setDataInicio(data.dataInicio());
-            contratoToUpdate.setDataFim(data.dataFim());
-            contratoToUpdate.setStatus((StatusContrato) data.status());
 
-            // 4. Salva a entidade atualizada e a retorna.
+            // Atualiza apenas os campos que não são nulos no DTO, permitindo atualizações parciais
+            if (data.descricao() != null) {
+                contratoToUpdate.setDescricao(data.descricao());
+            }
+            if (data.valorTotal() != null) {
+                contratoToUpdate.setValorTotal(data.valorTotal());
+            }
+            if (data.valorDiaria() != null) {
+                contratoToUpdate.setValorDiariaCobrada(data.valorDiaria());
+            }
+            if (data.dataInicio() != null) {
+                contratoToUpdate.setDataInicio(data.dataInicio());
+            }
+            if (data.dataFim() != null) {
+                contratoToUpdate.setDataFim(data.dataFim());
+            }
+            if (data.statusContrato() != null && !data.statusContrato().isBlank()) {
+                contratoToUpdate.setStatus(data.statusContrato());
+            }
+
             return contratoRepository.save(contratoToUpdate);
 
         } catch (ContratoNaoEncontradoException e) {
-            // 5. Captura a exceção específica e a relança para ser tratada pelo GlobalExceptionHandler.
             throw e;
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Status de contrato inválido: " + data.statusContrato());
         } catch (Exception e) {
-            // 6. Captura qualquer outro erro inesperado e o "embrulha" numa exceção genérica.
             throw new Exception("Ocorreu um erro inesperado ao atualizar o contrato.", e);
         }
     }
