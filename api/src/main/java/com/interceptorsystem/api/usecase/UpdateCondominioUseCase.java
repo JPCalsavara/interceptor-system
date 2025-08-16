@@ -2,12 +2,12 @@ package com.interceptorsystem.api.usecase;
 
 import com.interceptorsystem.api.dto.CondominioRequestDTO;
 import com.interceptorsystem.api.entity.CondominioEntity;
+import com.interceptorsystem.api.domain.vo.Endereco;
 import com.interceptorsystem.api.exception.CondominioNaoEncontradoException;
 import com.interceptorsystem.api.repository.CondominioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,32 +15,42 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UpdateCondominioUseCase {
 
-    public final CondominioRepository condominioRepository;
+    private final CondominioRepository condominioRepository;
 
     public CondominioEntity execute(UUID id, CondominioRequestDTO data) throws Exception {
         try {
             Optional<CondominioEntity> optionalCondominio = condominioRepository.findById(id);
-
-            if (optionalCondominio.isPresent()) {
-                CondominioEntity condominioToUpdate = optionalCondominio.get();
-                condominioToUpdate.setNome(data.nome());
-                condominioToUpdate.setStatus(data.status());
-                return condominioRepository.save(condominioToUpdate);
-            } else {
-                // Lança a exceção específica
+            if (optionalCondominio.isEmpty()) {
                 throw new CondominioNaoEncontradoException("Condomínio com o ID " + id + " não encontrado.");
             }
 
-        } catch (CondominioNaoEncontradoException e) {
-            // 1. Captura a exceção específica de "não encontrado".
-            //    Ao relançá-la aqui, você permite que o Spring a veja e retorne o status 404.
-            throw e;
+            CondominioEntity condominioToUpdate = optionalCondominio.get();
 
+            // Cria o novo Value Object de Endereço a partir dos dados do DTO
+            Endereco novoEndereco = new Endereco(
+                    data.logradouro(),
+                    data.numero(),
+                    data.complemento(),
+                    data.bairro(),
+                    data.cidade(),
+                    data.estado(),
+                    data.cep()
+            );
+
+            // Atualiza os campos da entidade
+            condominioToUpdate.setNome(data.nome());
+            condominioToUpdate.setStatus(data.status());
+            condominioToUpdate.setEndereco(novoEndereco);
+            // O CNPJ geralmente não é alterado em uma atualização para manter a integridade
+
+            return condominioRepository.save(condominioToUpdate);
+
+        } catch (CondominioNaoEncontradoException e) {
+            throw e;
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Dados inválidos fornecidos: " + e.getMessage(), e);
         } catch (Exception e) {
-            // 2. Captura qualquer outra exceção inesperada (ex: erro de banco de dados).
-            //    Aqui você a "embrulha" em uma exceção genérica.
             throw new Exception("Ocorreu um erro inesperado ao atualizar o condomínio.", e);
         }
     }
-
 }
